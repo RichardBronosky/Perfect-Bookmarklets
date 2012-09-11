@@ -1,30 +1,64 @@
 <!DOCTYPE html>
 <html>
   <head>
-		<style>
-			label { display:block; width:350px; background:#DDD; border-radius:7px; padding:2px 2px 2px 4px; font-family:sans-serif; font-size: small; }
-		</style>
+    <style>
+      label { display:block; width:350px; background:#DDD; border-radius:7px; padding:2px 2px 2px 4px; font-family:sans-serif; font-size: small; }
+    </style>
   </head>
   <body>
     <p>
-    This bookmarklet will show a prompt with your cookie value in it. If you change it and click OK, then you will change your cookie. Use it while on the "Cart" page. If 2 people both have this bookmarklet they can give/exchange carts.
+    This bookmarklet will show a prompt with your cookie value in it. If you
+    change it and click OK, then you will change your cookie. Use it while on
+    the "Cart" page. If 2 people both have this bookmarklet they can
+    give/exchange carts.
     </p>
     <p>
-    It doesn't allow you to combine carts, steal carts, or cheat in any way. It's just a simple exercise of way all browsers work. Enjoy!
-    </p>
+    It doesn't allow you to combine carts, steal carts, or cheat in any way.
+    It's just a simple exercise of way all browsers work. Enjoy!  </p>
     <p>
     Bookmark this link: <a id="theAnchor" href="#null">foo</a>
     <label for="theAnchor"></label>
     </p>
+    <p>
+    <a href="http://cl.ly/EqWt/MJ%20Bookmarklet.m4v">Video Instructions</a>
+    </p>
     <script type="text/javascript" src="crunch.js">
-      // Maintaining bookmarklets is a major pain. This is my concept for a DRY maintenance technique. I probably doesn't work on IE. In fact, I hope it doesn't.
+      // Maintaining bookmarklets is a major pain. This is my concept for a DRY
+      // maintenance technique. I probably doesn't work on IE. In fact, I hope
+      // it doesn't.
 
-      // Turn the function into a bookmarklet. The first argument is the id of the anchor to Link it to. The second argument is used as the title.
+      // Turn the function into a bookmarklet. The first argument is the id of
+      // the anchor to Link it to. The second argument is used as the title.
       bookmarklet("theAnchor", "MJ Platinum Cart Trader",
         function(){
-          c=prompt("cookie?", document.cookie.replace(new RegExp(".*CustomerPortal="), '').replace(new RegExp(";.*"), ''));
-          document.cookie="CustomerPortal="+c+";";
-          document.location.reload();
+          if(document.location.hash.substring(0, 3) === "#!/"){
+            // Retrieve cookie out of hash-bang
+            c=document.location.hash.substring(3,
+              document.location.hash.length
+            );
+          }else{
+            // Prompt user for cookie showing the existing cookie
+            c=prompt("cookie?",
+              document.cookie
+                .replace(new RegExp(".*CustomerPortal="), '')
+                .replace(new RegExp(";.*"), '')
+            );
+          }
+          if(c){
+            // Set cookie
+            document.cookie="CustomerPortal="+c+";";
+            document.location.reload();
+          }else if(c === ''){
+            // Clear all cookies
+            var cookies = document.cookie.split(";");
+            for (var i = 0; i < cookies.length; i) {
+              var cookie = cookies[i];
+              var eqPos = cookie.indexOf("=");
+              var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+              document.cookie =
+                "" + name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+            }
+          }
         }
       );
     </script>
