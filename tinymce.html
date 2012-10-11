@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
-		<style>
-			label { display:block; width:350px; background:#DDD; border-radius:7px; padding:2px 2px 2px 4px; font-family:sans-serif; font-size: small; }
-		</style>
+    <style>
+      label { display:block; width:350px; background:#DDD; border-radius:7px; padding:2px 2px 2px 4px; font-family:sans-serif; font-size: small; }
+    </style>
   </head>
   <body>
     <p>
@@ -15,7 +15,14 @@
 
       // Turn the function into a bookmarklet. The first argument is the id of the anchor to Link it to. The second argument is used as the title.
       bookmarklet("theAnchor", "Remove TinyMCE",
-					function(){for(var i=0;i<tinymce.editors.length;i++){tinyMCE.execCommand("mceRemoveControl",true,tinymce.editors[i].id);}}
+        function(){
+          for(var i=0;i<tinymce.editors.length;i++){
+            var tmpId=tinymce.editors[i].id;
+            var tmpVal=document.getElementById(tmpId).value;
+            tinyMCE.execCommand("mceRemoveControl",true,tmpId);
+            document.getElementById(tmpId).value=tmpVal
+          }
+        }
       );
     </script>
   </body>
