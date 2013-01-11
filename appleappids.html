@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      label { display:block; width:350px; background:#DDD; border-radius:7px; padding:2px 2px 2px 4px; font-family:sans-serif; font-size: small; }
+    </style>
+  </head>
+  <body>
+    <p>
+    Bookmark this link: <a id="theAnchor" href="#null">foo</a>
+    <label for="theAnchor"></label>
+    </p>
+    <script type="text/javascript" src="crunch.js">
+      // Maintaining bookmarklets is a major pain. This is my concept for a DRY maintenance technique. I probably doesn't work on IE. In fact, I hope it doesn't.
+
+      // Turn the function into a bookmarklet. The first argument is the id of the anchor to Link it to. The second argument is used as the title.
+      bookmarklet("theAnchor", "!Apple App IDs",
+function () {
+    var s = document.createElement('script');
+    s.setAttribute('src', '//cdnjs.cloudflare.com/ajax/libs/jquery/1.8.3/jquery.min.js');
+    document.getElementsByTagName('body')[0].appendChild(s);
+
+    function doWait() {
+        function expandNames() {
+            jQuery('.name strong').each(function (i, e) {
+                var e = jQuery(e),
+                    t = e.attr('title');
+                if (t) {
+                    e.text(t)
+                }
+            })
+           jQuery('.appid').each(function(){if(this.title){this.textContent=this.title}})
+        }
+        if (typeof (jQuery) == "undefined") {
+            setTimeout(doWait, 100)
+        } else {
+            expandNames()
+        }
+    }
+    doWait()
+}
+      );
+    </script>
+  </body>
+</html>
+<!-- vim: set ts=2 sw=2 sts=2 et :-->
