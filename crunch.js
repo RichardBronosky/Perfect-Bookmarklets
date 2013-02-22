@@ -229,6 +229,7 @@
 
   // Allow dynamic loading of JS, with a callback afterward
   window.bookmarkletRequires = function(scriptUrlOrUrls, callback) {
+      var tick = 0;
       // require
       var __require = function(src, callback) {
           var script = document.createElement('script'),
@@ -238,7 +239,6 @@
                   try {
                       callback && callback();
                   } catch(exception) {
-                      debugger;
                       console.log('[Caught Exception1]', exception);
                       console.log(callback);
                   }
@@ -256,22 +256,30 @@
               script.onload = loaded;
           }
           script.setAttribute('src', src);
-          document.body.insertBefore(script, scriptTags[(length - 1)].nextSibling);
+          // The following is a great idea, but when you have extensinos that add scripts, it gets confused
+          //document.body.insertBefore(script, scriptTags[(length - 1)].nextSibling);
+          // For now I'm going to just append to the body
+          document.body.appendChild(script);
       };
 
       // process script url[s]
       if (typeof scriptUrlOrUrls === 'string') {
           __require(scriptUrlOrUrls, callback);
+          console.log(++tick);
       } else if (scriptUrlOrUrls.constructor === Array) {
+          console.log(++tick);
           if (scriptUrlOrUrls.length) {
+             console.log(++tick);
              // load each asset in series
-              __require(scriptUrlOrUrls.shift(), function() { window.bookmarkletRequires(scriptUrlOrUrls, callback); });
+              var recurs = arguments.callee;
+              __require(scriptUrlOrUrls.shift(), function() { recurs(scriptUrlOrUrls, callback); });
           } else {
+              console.log(++tick);
               try {
                   callback && callback();
               } catch(exception) {
-                  debugger;
                   console.log('[Caught Exception2]', exception);
+                  console.log(callback);
               }
           }
       }

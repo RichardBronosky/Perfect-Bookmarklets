@@ -10,16 +10,18 @@
     Bookmark this link: <a id="theAnchor" href="#null">foo</a>
     <label for="theAnchor"></label>
     </p>
-    <script type="text/javascript" src="https://raw.github.com/RichardBronosky/Perfect-Bookmarklets/master/crunch.js">
+    <script type="text/javascript" src="https://github.com/RichardBronosky/Perfect-Bookmarklets/raw/master/crunch.js">
       // Maintaining bookmarklets is a major pain. This is my concept for a DRY maintenance technique. I probably doesn't work on IE. In fact, I hope it doesn't.
 
       // Turn the function into a bookmarklet. The first argument is the id of the anchor to Link it to. The second argument is used as the title.
+      var func;
       bookmarklet("theAnchor", "Demo Bookmarklet",
         function () {
-          bookmarkletRequires(['http://richardbronosky.github.com/speak.js', 'http://richardbronosky.github.com/listen.js'], function(){
-            say('hello');
+          func = function(){
             hear('good bye');
-          })
+            say('hello');
+          };
+          bookmarkletRequires(['http://richardbronosky.github.com/speak.js', 'http://richardbronosky.github.com/listen.js'], func);
         }
       );
     </script>

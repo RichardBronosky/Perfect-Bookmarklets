@@ -10,28 +10,18 @@
     Bookmark this link: <a id="theAnchor" href="#null">foo</a>
     <label for="theAnchor"></label>
     </p>
-    <script type="text/javascript" src="crunch.js">
+    <script type="text/javascript" src="https://github.com/RichardBronosky/Perfect-Bookmarklets/raw/master/crunch.js">
       // Maintaining bookmarklets is a major pain. This is my concept for a DRY maintenance technique. I probably doesn't work on IE. In fact, I hope it doesn't.
 
       // Turn the function into a bookmarklet. The first argument is the id of the anchor to Link it to. The second argument is used as the title.
       bookmarklet("theAnchor", "!Jira Assign",
 function () {
-    var s = document.createElement('script');
-    s.setAttribute('src', '//cdnjs.cloudflare.com/ajax/libs/jquery/1.8.3/jquery.min.js');
-    document.getElementsByTagName('body')[0].appendChild(s);
-
-    function doWait() {
-        function doMain($) {
-          var el = $('#assignee').find('optgroup');
-          el.parent().append(el.children()).focus()
-        }
-        if (typeof (jQuery) == "undefined") {
-            setTimeout(doWait, 100)
-        } else {
-            doMain(jQuery)
-        }
-    }
-    doWait()
+    bookmarkletRequires('//cdnjs.cloudflare.com/ajax/libs/jquery/1.8.3/jquery.min.js',
+      function () {
+        var el = jQuery('#assignee').find('optgroup');
+        el.parent().append(el.children()).focus();
+      }
+    )
 }
       );
     </script>
