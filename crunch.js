@@ -227,11 +227,61 @@
     return code;
   };
 
+  // Allow dynamic loading of JS, with a callback afterward
+  window.bookmarkletRequires = function(scriptUrlOrUrls, callback) {
+      // require
+      var __require = function(src, callback) {
+          var script = document.createElement('script'),
+              scriptTags = document.getElementsByTagName('script'),
+              length = scriptTags.length,
+              loaded = function() {
+                  try {
+                      callback && callback();
+                  } catch(exception) {
+                      debugger;
+                      console.log('[Caught Exception1]', exception);
+                      console.log(callback);
+                  }
+              };
+          script.setAttribute('type', 'text/javascript');
+          script.setAttribute('charset', 'utf-8');
+          if (script.readyState) {
+              script.onreadystatechange = function() {
+                  if (script.readyState === 'loaded' || script.readyState === 'complete') {
+                      script.onreadystatechange = null;
+                      loaded();
+                  }
+              };
+          } else {
+              script.onload = loaded;
+          }
+          script.setAttribute('src', src);
+          document.body.insertBefore(script, scriptTags[(length - 1)].nextSibling);
+      };
+
+      // process script url[s]
+      if (typeof scriptUrlOrUrls === 'string') {
+          __require(scriptUrlOrUrls, callback);
+      } else if (scriptUrlOrUrls.constructor === Array) {
+          if (scriptUrlOrUrls.length) {
+             // load each asset in series
+              __require(scriptUrlOrUrls.shift(), function() { window.bookmarkletRequires(scriptUrlOrUrls, callback); });
+          } else {
+              try {
+                  callback && callback();
+              } catch(exception) {
+                  debugger;
+                  console.log('[Caught Exception2]', exception);
+              }
+          }
+      }
+  }
+
   // Turn anchor into a proper bookmarklet
   window.bookmarklet = function(anchor_id, name, func){
     anchor = window.document.getElementById(anchor_id);
     anchor.innerHTML = name;
-    anchor.href = 'javascript:('+window.crunch(new String(func))+')()';
+    anchor.href = 'javascript:('+window.crunch((new String(func)).replace(/bookmarkletRequires/, '('+new String(window.bookmarkletRequires)+')'))+')()';
     // Instead of running the bookmarklet on click, show a popup to help out mobile users.
     anchor.onclick = function(){ mobile_popup(this); return false; }
     if(label=get_label_for(anchor_id)){
@@ -241,8 +291,8 @@
 
   // Make it possible to place embeded script in the same tag that references this external script
   (function(){
-    var scripts = document.getElementsByTagName('script');
-    eval( scripts[ scripts.length - 1 ].innerHTML );
+    var scriptTags = document.getElementsByTagName('script');
+    eval( scriptTags[ scriptTags.length - 1 ].innerHTML );
   })();
 
 })(window);
