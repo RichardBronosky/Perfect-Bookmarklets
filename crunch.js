@@ -197,7 +197,7 @@
 
     // TODO: mobile_bookmarklet_close must be dynamically ided to match the triggering anchor
     var close = document.createElement('span');
-    close.innerHTML = '<a href="#null" id="'+el.id+"_popup_close"+'" onclick="mobile_popup.closer(this);">&#9099;</a>';
+    close.innerHTML = '<a href="#null" id="'+el.id+"_popup_close"+'" onclick="mobile_popup.closer(this);">&#10006;</a>';
     close.classList.add('mobile_bookmarklet_close')
 
     var span = document.createElement('span');
